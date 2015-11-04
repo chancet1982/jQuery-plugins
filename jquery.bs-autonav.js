@@ -58,7 +58,11 @@
       } else {
         $(settings.addTo).append(autonavHTML)
       }
-	autonavOffset = $( "#bs-autonav").offset().top - $("nav.navbar.navbar-default.navbar-fixed-top").height();
+
+      autonavOffset = 0;
+      if ($( "#bs-autonav").length > 0) 
+        autonavOffset = $( "#bs-autonav").offset().top - $("nav.navbar.navbar-default.navbar-fixed-top").height();    
+      
       for(var i in links['links']) { //adding the links to the menu
         if (links['links'].length < settings.maxLinks) {
           linkHTML = "<li><a href='#"+ links['links'][i].linkUrl +"'>" + links['links'][i].linkText +"</a></li>";
