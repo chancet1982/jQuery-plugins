@@ -33,10 +33,11 @@
 			    id = id + s.charCodeAt(i);
 			}
 
-            if (detectIE())
+            if (detectIE()) {
             	id_length = id.toString().length;;
-            else
-            	id_length = (Math.log10((id ^ (id >> 31)) - (id >> 31)) | 0) + 1;
+            } else {
+            	id_length = (Math.log10((id ^ (id >> 31)) - (id >> 31)) | 0) + 1;            	
+            }
                         
             if (id_length < des_length) {
             	id = id + 10000000;
