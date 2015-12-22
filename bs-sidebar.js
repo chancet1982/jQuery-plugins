@@ -3,126 +3,112 @@ $(function() {
 
 		//defaults
         var settings = $.extend({
-            toggleFixPos: true,
-            toggleBackground: true,
-            customToggle: false, //implemented
-            toggleID:'.navbar-toggle', //implemented
-            pageID:'.screen-wrapper', //implemented
-            animated: true, //implemented
-            dismissOnPage: true, //implemented
-			offsetPage: false, //implemented
-			collapseSidebar: '768px', //implemented
-			sidebarWidth: '280px', //implemented
-			togglerWidth: '75px', //implemeneted
-			borderColor: '#E7E7E7', //implemented
-			borderColorOn: '#E7E7E7', //implemented
-			toggleIconColor: '#888', //implemented
-			toggleBorderColor: '#ddd', //implemeneted
-			toggleBackgroundColorOn: '#E7E7E7', //implemented
-			sidebar:true,
-			hidebar:false
+            customToggle: true, //use custom toggler instead of built-in toggler, it should have the following structure:
+			customToggleID:'.custom-sidebar-toggle', //what class does the custom toggle button have EXAMPLE: <a class="custom-sidebar-toggle">toggle the sidebar</a>
+            pageID:'.screen-wrapper', //what class is wrapping the page.
+            animated: true, //determines if the offcanvas is animated or not.
+            dismissOnPage: true, //determines if the sider should be collpased if clicked outside
+			offsetPage: true, //determines if the page content should be offset once sidebar is expanded
+			collapseSidebar: '768px', //what width should the sidebar collapse in
+			sidebarWidth: 280, //what is the width os the sidebar when expanded.
+			togglerWidth: 75, //what is the width needed for the sidebar toggler
+			units:'px',
+			borderColor: '#E7E7E7', //what is the border color to be used for the sidebar
+			borderColorOn: '#E7E7E7', //what is the border color for the sidebar on hover
+			toggleIconColor: '#888', //color code for the built-in toggler.
+			toggleBorderColor: '#ddd', //color code for the border around the toggler.
+			toggleBackgroundColorOn: '#E7E7E7', //what is the color code for the background of the toggler
+			sidebarOnDesktop:false, // determines if the sidebar should be a sidebar in larger resolution, I.E. desktop
+			targetClass: '.sidebar', //class for sidebar (only used if sidebarOnDesktop is FALSE)
+			sidebarPos:'left' //position of sidebar can be left or right (only used if sidebarOnDesktop is FALSE)
         }, options );
 
 		/*--- sidebars support  ---*/
-		if (settings.sidebar) {
-			css = 	"<style>"+
-					".navbar-fixed-left, "+
-					".navbar-fixed-right {position: fixed;top:0px;bottom: 0px;z-index: 1030;}"+
-					".navbar-fixed-left {left:0px;}"+
-					".navbar-fixed-right {right:0px;}"+
-					".navbar-fixed-left .container,"+
-					".navbar-fixed-right .container {width: "+settings.sidebarWidth+";height: 100%;}"+
-					".navbar-fixed-left .navbar-collapse,"+
-					".navbar-fixed-right .navbar-collapse {padding-right: 0px;padding-left: 0px;}"+
-					"@media (min-width:"+settings.collapseSidebar+"){"+
-					"    .navbar-fixed-left {left: 0px;}"+
-					"    .navbar-fixed-right {right: 0px;}"+
-					"    .navbar-fixed-left .navbar-header,"+
-					"    .navbar-fixed-right .navbar-header,"+
-					"    .navbar-fixed-left .navbar-nav,"+
-					"    .navbar-fixed-right .navbar-nav,"+
-					"    .navbar-fixed-left .navbar-nav > li,"+
-					"    .navbar-fixed-right .navbar-nav > li {float: none;}"+
-					"}"+
-					"@media (max-width:"+settings.collapseSidebar+"){"+
-						settings.pageID+" {position: absolute;top: 0px;width: 100%;}"+
-						settings.pageID+".left {padding-left: "+settings.togglerWidth+";left:0px;}"+
-						settings.pageID+".right {padding-right: "+settings.togglerWidth+";right:0px;}"+
-						settings.pageID+".custom-toggle {padding-left: 0;padding-right: 0;}"+
-						settings.pageID+".offset-left {left: "+settings.sidebarWidth+";}"+
-						settings.pageID+".offset-right {right: "+settings.sidebarWidth+";}"+
-					"    nav.navbar-fixed-left,"+
-					"    nav.navbar-fixed-right {margin-bottom: 0px;}"+
-					"    .nav {padding-left: 15px;padding-right: 15px;margin-bottom: 0px;}"+
-					"    .navbar-nav {margin:0;}"+
-					"    .navbar-nav > li > a {padding-top: 15px;padding-bottom: 15px;}"+
-					"    .navbar-fixed-left .navbar-toggle,"+
-					"    .navbar-fixed-right .navbar-toggle {position: absolute;top:0px;margin-left: 15px;}"+
-					"    .navbar-fixed-left.collapsed .navbar-toggle {left:0px;}"+
-					"    .navbar-fixed-left.expanded .navbar-toggle {left:"+settings.sidebarWidth+";}"+
-					"    .navbar-fixed-right.collapsed .navbar-toggle {right:0px;}"+
-					"    .navbar-fixed-right.expanded .navbar-toggle {right:"+settings.sidebarWidth+";}"+   
-					"    .navbar-toggle {border-color: "+settings.toggleBorderColor+";}"+
-					"    .navbar-toggle:hover {background-color: "+settings.toggleBackgroundColorOn+";}"+
-					"    .navbar-toggle .icon-bar {background-color: "+settings.toggleIconColor+";}"+
-					"    .navbar-fixed-left .container {border-right: solid 1px "+settings.borderColor+";}"+
-					"    .navbar-fixed-right .container {border-left: solid 1px "+settings.borderColor+";}"+
-					"    .navbar-fixed-left .container,"+
-					"    .navbar-fixed-right .container {position: absolute;}"+
-						settings.pageID+".animated,"+
-					"    .navbar-fixed-left.animated,"+
-					"    .navbar-fixed-right.animated,"+
-					"    .navbar-fixed-left.animated .container,"+
-					"    .navbar-fixed-right.animated .container,"+
-					"    .navbar-fixed-left.animated .navbar-toggle,"+
-					"    .navbar-fixed-right.animated .navbar-toggle {-webkit-transition: all 0.3s ease-out;transition: all 0.3s ease-out;}"+
-					"    .navbar-fixed-left.collapsed .container {left: -"+settings.sidebarWidth+";}"+
-					"    .navbar-fixed-left.expanded .container {left: 0;}"+
-					"    .navbar-fixed-right.collapsed .container {right: -"+settings.sidebarWidth+";}"+
-					"    .navbar-fixed-right.expanded .container {right: 0;}"+
-					"    .navbar-fixed-left.collapsed,"+
-					"    .navbar-fixed-right.collapsed {width:"+settings.togglerWidth+";}"+
-					"    .navbar-fixed-left.custom-toggle.collapsed,"+
-					"    .navbar-fixed-right.custom-toggle.collapsed {width:0px;}"+
-					"    .navbar-fixed-left.expanded,"+
-					"    .navbar-fixed-right.expanded {width:355px;}"+
-					"    .navbar-fixed-left.custom-toggle.expanded,"+
-					"    .navbar-fixed-right.custom-toggle.expanded {width:"+settings.sidebarWidth+";}"+
-					"}"+
-					"</style>";	
+		css = 	"<style>"+
+				"@media (max-width:"+settings.collapseSidebar+"){"+
+					settings.targetClass +"{position: fixed;top:0px;bottom: 0px;z-index: 1030;}"+
+					settings.targetClass +" {"+settings.sidebarPos+":0px;}"+
+					settings.targetClass +" .container {width: "+settings.sidebarWidth+settings.units+";height: 100%;}"+
+					settings.targetClass +" .navbar-collapse {padding-right: 0px;padding-left: 0px;}"+					
+					settings.pageID+" {position: absolute;top: 0px;width: 100%;}"+
+					settings.pageID+"."+settings.sidebarPos+" {padding-"+settings.sidebarPos+": "+settings.togglerWidth+settings.units+";"+settings.sidebarPos+":0px;}"+
+					settings.pageID+".custom-toggle {padding-left: 0;padding-right: 0;}"+
+					settings.pageID+".offset-"+settings.sidebarPos+" {"+settings.sidebarPos+": "+settings.sidebarWidth+settings.units+";}"+
+					"nav"+settings.targetClass +" {margin-bottom: 0px;}"+
+					".nav {padding-left: 15px;padding-right: 15px;margin-bottom: 0px;}"+
+					".navbar-nav {margin:0;}"+
+					".navbar-nav > li > a {padding-top: 15px;padding-bottom: 15px;}"+
+					settings.targetClass +" .navbar-toggle {position: absolute;top:0px;margin-left: 15px;}"+
+					settings.targetClass +".collapsed .navbar-toggle {"+settings.sidebarPos+":0px;}"+
+					settings.targetClass +".expanded .navbar-toggle {"+settings.sidebarPos+":"+settings.sidebarWidth+settings.units+";}"+
+					".navbar-toggle {border-color: "+settings.toggleBorderColor+";}"+
+					".navbar-toggle:hover {background-color: "+settings.toggleBackgroundColorOn+";}"+
+					".navbar-toggle .icon-bar {background-color: "+settings.toggleIconColor+";}"+
+					settings.targetClass +" .container {position: absolute;}"+
+					settings.pageID+".animated,"+
+					settings.targetClass +".animated,"+
+					settings.targetClass +".animated .container,"+
+					settings.targetClass +".animated .navbar-toggle {-webkit-transition: all 0.3s ease-out;transition: all 0.3s ease-out;}"+
+				
+					settings.targetClass +".collapsed .container {"+settings.sidebarPos+": -"+settings.sidebarWidth+settings.units+";}"+
+					settings.targetClass +".expanded .container {"+settings.sidebarPos+": 0;}"+
+					settings.targetClass +".collapsed {width:"+settings.togglerWidth+settings.units+";}"+
+					settings.targetClass +".custom-toggle.collapsed {width:0px;}"+
+					settings.targetClass +".expanded {width:"+(settings.sidebarWidth+settings.togglerWidth)+settings.units+ ";}"+
+					settings.targetClass +".custom-toggle.expanded {width:"+settings.sidebarWidth+settings.units+";}";
+
+		if (settings.sidebarPos == 'left') {
+
+			css +=	settings.targetClass +" .container {border-right: solid 1px "+settings.borderColor+";}"+
+					settings.targetClass +"{border-right:solid 1px "+settings.borderColor+";}"+
+				"}";
+		} else {
+			css +=	settings.targetClass +" .container {border-left: solid 1px "+settings.borderColor+";}"+
+					settings.targetClass +"{border-left:solid 1px "+settings.borderColor+";}"+
+				"}";				
+		}
+		
+		var pageIDWidth = $(window).width() - settings.sidebarWidth;
+		
+		if (settings.sidebarOnDesktop) {
+			css +=	"@media (min-width:"+settings.collapseSidebar+"){"+
+					settings.targetClass +"{position: fixed;top:0px;bottom: 0px;z-index: 1030;}"+
+					settings.targetClass +" .container {width: "+settings.sidebarWidth+settings.units +";height: 100%;}"+
+					settings.targetClass +" .navbar-collapse {padding-right: 0px;padding-left: 0px;}"+					
+					settings.pageID +" {width: "+pageIDWidth+settings.units+"; margin-left:"+settings.sidebarWidth+settings.units+"; }"+
+					settings.targetClass +" .navbar-header,"+
+					settings.targetClass +" .navbar-nav,"+
+					settings.targetClass +" .navbar-nav > li {float: none;}";
+			if (settings.sidebarPos == 'left') {
+			css +=	settings.targetClass +"{"+settings.sidebarPos+":0px;right:auto;border-right-width:1px;border-right-style:solid;}"+
+				"}";
+			} else {
+			css +=	settings.targetClass +"{"+settings.sidebarPos+":0px;left:auto;border-left-width:1px;border-left-style:solid;}"+
+				"}";				
+			}
 		}
 
-		if (settings.hidebar) {
-			css = 	"<style>"+
-					".navbar-fixed-bottom.scroll, .navbar-fixed-top.scroll {"+
-						"position: absolute;"+
-					"}"+
-					"</style>";	
-		}
+		css+="</style>";						
+/*console.log("$(window).width(): " + $(window).width());
+console.log("$(settings.targetClass).width(): " + $(settings.targetClass).width());*/
+		
 
 		//initializing the page
 		$(this).each(function(){
 			thisObj = $(this);
-			togglePosition = undefined;
-			if ($(this).hasClass('navbar-fixed-left')) {
-				togglePosition = 'left';
-			} else if ($(this).hasClass('navbar-fixed-right')){
-				togglePosition = 'right';
-			}
-
-			if (togglePosition != undefined ) {
-				$(this).find('.navbar-collapse').removeClass('collapse');
-			}
+			/*togglePosition = undefined;*/
+			togglePosition = settings.sidebarPos;
+			$(this).find('.navbar-collapse').removeClass('collapse');
 			
 			if (!settings.customToggle) {
 				$(this).prepend($(this).find('.navbar-toggle').clone().addClass(togglePosition));				
 			} else {
 				$(this).addClass('custom-toggle');
 				$(settings.pageID).addClass('custom-toggle');				
-				$(settings.toggleID).addClass(togglePosition);
+				$(settings.customToggleID).addClass(togglePosition);
 			}
 
-			$(settings.toggleID).attr('data-toggle','collapse-offscreen');				
+			$(settings.customToggleID).attr('data-toggle','collapse-offscreen');				
 			$(this).find('.container .navbar-toggle' ).remove();
 			
 			if (settings.animated) {
@@ -138,39 +124,6 @@ $(function() {
 		});
 		
 		//collapse sidebar function
-		if (settings.hidebar) {
-			console.log("should use hidebar");
-			var position = $(window).scrollTop();
-
-			$(window).scroll(function() {
-				var scroll = $(window).scrollTop();
-				if ($(thisObj).hasClass('navbar-fixed-top')) {
-					thisObjFixedPos = 'top';
-				} else if ($(thisObj).hasClass('navbar-fixed-bottom')){
-					thisObjFixedPos = 'bottom';
-				}
-
-				console.log(thisObjFixedPos);
-
-				if (scroll > position) {
-					if (!$(thisObj).hasClass('scroll')) { // scrolling down
-						$(thisObj).addClass('scroll').css(thisObjFixedPos,"-"+$(thisObj).outerHeight()+"px"); 
-					}
-				} else {
-					if ($(thisObj).hasClass('scroll')) { // scrolling up	
-						if (thisObjFixedPos == 'top') {
-							$(thisObj).removeClass('scroll').animate({'top':0}, 300); 
-						} else if (thisObjFixedPos == 'bottom'){
-							$(thisObj).removeClass('scroll').animate({'bottom':0}, 300);
-						}
-						
-					}
-				}
-				position = scroll;
-			});	
-		}
-
-		//collapse sidebar function
 		var collapseSidebar = function(targetElement) {
 			targetElement.removeClass('expanded').addClass('collapsed');
 			if (settings.offsetPage) {
@@ -182,17 +135,13 @@ $(function() {
 		var expandSiderbar = function(targetElement) {
 			targetElement.removeClass('collapsed').addClass('expanded');
 			if (settings.offsetPage) {
-				if (targetElement.hasClass('navbar-fixed-left')) {
-					$(settings.pageID).addClass('offset-left');
-				} else if (targetElement.hasClass('navbar-fixed-right')) {
-					$(settings.pageID).addClass('offset-right');
-				}
+				$(settings.pageID).addClass('offset-'+settings.sidebarPos);
 			}
 		}				
 
 		//handling click events
 		$(document).mouseup(function (e) {
-		    var container = $("nav.navbar-fixed-left, nav.navbar-fixed-right");
+		    var container = $("nav"+settings.targetClass);
 			var source = e.target || e.srcElement;		    
 			if($(source).data('toggle') != 'collapse-offscreen') { //clicking not on data-toggle
 				if (settings.dismissOnPage) {

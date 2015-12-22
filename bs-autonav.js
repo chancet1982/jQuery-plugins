@@ -10,7 +10,7 @@
     var settings = $.extend({
       addTo: "body",
       addMethod: "prepend",
-      marginTop: "100",
+      marginTop: "0",
       fixToBody:true,
       floatNav:true,
       minLinks:2,
